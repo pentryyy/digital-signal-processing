@@ -1,15 +1,15 @@
-#include "SignalData.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <cmath>
 #include <tuple>
-#include "matplotlibcpp.h"
 
-namespace plt = matplotlibcpp;
+#include "include/SignalData.h"
+#include "include/matplotlibcpp.h"
 
-const double PI = 3.14159265358979323846;
+#define PI  3.14159265358979323846
+#define plt matplotlibcpp
 
 // Функция для генерации гармоники
 std::vector<double> generateHarmonic(
@@ -21,7 +21,7 @@ std::vector<double> generateHarmonic(
         double t = i * deltaT;
         harmonic[i] = amplitude * sin(2 * PI * frequency * t + phase);
     }
-    
+
     return harmonic;
 }
 

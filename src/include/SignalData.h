@@ -9,7 +9,7 @@ struct SignalData {
 
     SignalData() = default;
 
-    const std::vector<double>& getTime()   const { return time; }
+    const std::vector<double>& getTime() const { return time; }
     const std::vector<double>& getSignal() const { return signal; }
 
     void addData(double t, double s) {
@@ -18,4 +18,4 @@ struct SignalData {
     }
 };
 
-#endif
+#endif  // SIGNALDATA_H
