@@ -7,23 +7,9 @@
 
 #include "include/SignalData.h"
 #include "include/matplotlibcpp.h"
+#include "component/HarmonicUtils.h"
 
-#define PI  3.14159265358979323846
 #define plt matplotlibcpp
-
-// Функция для генерации гармоники
-std::vector<double> generateHarmonic(
-    int numPoints, double amplitude, 
-    double frequency, double phase, double deltaT) {
-
-    std::vector<double> harmonic(numPoints);
-    for (int i = 0; i < numPoints; ++i) {
-        double t = i * deltaT;
-        harmonic[i] = amplitude * sin(2 * PI * frequency * t + phase);
-    }
-
-    return harmonic;
-}
 
 int main() {
     // Объект для хранения данных графика гармоник
@@ -59,7 +45,7 @@ int main() {
         double frequency = std::get<1>(harmonicParams[i]);
         double phase = std::get<2>(harmonicParams[i]);
 
-        harmonics[i] = generateHarmonic(numPoints, amplitude, frequency, phase, deltaT);
+        harmonics[i] = HarmonicUtils::generateHarmonic(numPoints, amplitude, frequency, phase, deltaT);
 
         // Суммирование гармоник
         for (int j = 0; j < numPoints; ++j) {
