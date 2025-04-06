@@ -2,6 +2,7 @@
 #define HARMONICPARAMS_H
 
 #include <vector>
+#include <tuple>
 
 class HarmonicParams {
 public:
