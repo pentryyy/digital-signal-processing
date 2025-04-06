@@ -18,3 +18,15 @@
     "-lfftw3-3"
 ],
 ```
+
+Сборка `.lib` для 32 bit библиотеки.
+
+```
+lib /machine:x86 /def:libfftw3-3.def
+```
+
+Сборка `.lib` для 64 bit библиотеки.
+
+```
+lib /machine:x64 /def:libfftw3-3.def
+```
