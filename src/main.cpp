@@ -1,29 +1,38 @@
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <vector>
-#include <tuple>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <cmath>
+#include <stdexcept>
 
-#include "include/SignalData.h"
-#include "include/matplotlibcpp.h"
+#include "include/signal_data.h"
 
-#include "component/HarmonicUtils.h"
-#include "component/HarmonicParams.h"
-
-namespace plt = matplotlibcpp;
+#include "component/harmonic_utils.h"
+#include "component/harmonic_params.h"
 
 int main() {
     SignalData data;
 
-    const int numOfHarmonics = HarmonicParams::harmonicParams.size(); // Количество гармоник
-    const int numOfPoints    = 10000;                                 // Количество точек
-
-    const double samplingFrequency = 1000.0;                  // Частота дискретизации (Гц)
-    const double deltaT            = 1.0 / samplingFrequency; // Шаг времени
+    /*
+    Количество гармоник
+    Количество точек
+    Частота дискретизации (Гц)
+    Шаг времени
+    */
+    const int    numOfHarmonics    = HarmonicParams::harmonicParams.size();
+    const int    numOfPoints       = 10000;
+    const double samplingFrequency = 1000.0;
+    const double deltaT            = 1.0 / samplingFrequency;
 
     // Векторы для хранения данных
     std::vector<std::vector<double>> harmonics(numOfHarmonics, std::vector<double>(numOfPoints));
     std::vector<double> resultSignal(numOfPoints, 0.0);
 
-    // Генерация гармоник
+    // Генерация гармоник и их суммирование
     for (int i = 0; i < numOfHarmonics; ++i) {
 
         double amplitude = std::get<0>(HarmonicParams::harmonicParams[i]);
@@ -34,7 +43,6 @@ int main() {
             numOfPoints, amplitude, frequency, phase, deltaT
         );
 
-        // Суммирование гармоник
         for (int j = 0; j < numOfPoints; ++j) {
             resultSignal[j] += harmonics[i][j];
         }
@@ -45,16 +53,7 @@ int main() {
         data.addData(t, resultSignal[i]);
     }
 
-    // Построение графика
-    plt::figure_size(800, 400);
-    plt::plot(data.getTime(), data.getSignal(), {{"label", "Result Signal"}, {"color", "b"}});
-    plt::xlabel("Time, s");
-    plt::ylabel("Signal Amplitude");
-    plt::title("Signal Plot");
-    plt::legend();
-    plt::grid(true);
-    
-    plt::show();
+    HarmonicUtils::exportData(data, "merged_signal_data.txt");
 
     return 0;
 }

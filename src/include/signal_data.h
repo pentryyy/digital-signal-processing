@@ -1,15 +1,13 @@
 #ifndef SIGNALDATA_H
 #define SIGNALDATA_H
 
-#include <vector>
-
 struct SignalData {
     std::vector<double> time;
     std::vector<double> signal;
 
     SignalData() = default;
 
-    const std::vector<double>& getTime() const { return time; }
+    const std::vector<double>& getTime()   const { return time; }
     const std::vector<double>& getSignal() const { return signal; }
 
     void addData(double t, double s) {
@@ -18,4 +16,4 @@ struct SignalData {
     }
 };
 
-#endif  // SIGNALDATA_H
+#endif // SIGNALDATA_H
