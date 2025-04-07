@@ -18,4 +18,6 @@ int main() {
     plt::grid(true);
     
     plt::show();
+
+    return 0;
 }

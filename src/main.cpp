@@ -14,11 +14,12 @@ int main() {
     const int    numOfPoints = 10000;
     const double deltaT      = 1e-4;
 
-    // Векторы для хранения данных
+    // Векторы для хранения исходного сигнала и времени для него
     std::vector<double> resultSignal(numOfPoints, 0.0);
+    std::vector<double> time(numOfPoints);
 
     // Генерация гармоник и их суммирование
-    for (const std::tuple<double, double, double> item : HarmonicParams::harmonicParams) {
+    for(const std::tuple<double, double, double> item : HarmonicParams::harmonicParams) {
 
         double amplitude = std::get<0>(item);
         double frequency = std::get<1>(item);
@@ -28,14 +29,14 @@ int main() {
             numOfPoints, amplitude, frequency, phase, deltaT
         );
 
-        for (int i = 0; i < numOfPoints; ++i) {
+        for(int i = 0; i < numOfPoints; ++i) {
             resultSignal[i] += harmonic[i];
+            time[i]         =  i * deltaT;
         }
     }
 
-    for (int i = 0; i < numOfPoints; ++i) {
-        double t = i * deltaT;
-        data.addData(t, resultSignal[i]);
+    for(int i = 0; i < numOfPoints; ++i) {
+        data.addData(time[i], resultSignal[i]);
     }
 
     HarmonicUtils::exportData(data, "merged_signal_data.txt");
