@@ -20,13 +20,11 @@ int main() {
     /*
     Количество гармоник
     Количество точек
-    Частота дискретизации (Гц)
     Шаг времени
     */
     const int    numOfHarmonics    = HarmonicParams::harmonicParams.size();
     const int    numOfPoints       = 10000;
-    const double samplingFrequency = 1000.0;
-    const double deltaT            = 1.0 / samplingFrequency;
+    const double deltaT            = 1e-4;
 
     // Векторы для хранения данных
     std::vector<std::vector<double>> harmonics(numOfHarmonics, std::vector<double>(numOfPoints));

@@ -18,7 +18,7 @@ namespace plt = matplotlibcpp;
 int main() {
     SignalData data = HarmonicUtils::importData("merged_signal_data.txt");
 
-    plt::figure_size(800, 400);
+    plt::figure_size(1200, 600);
     plt::plot(data.getTime(), data.getSignal(), {{"label", "Result Signal"}, {"color", "b"}});
     plt::xlabel("Time, s");
     plt::ylabel("Signal Amplitude");

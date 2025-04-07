@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include <iostream>
 #include <vector>
 #include <complex>
@@ -5,14 +7,18 @@
 #include <tuple>
 #include <cmath>
 #include <fftw3.h>
+
 #include "matplotlibcpp.h"
+
+#include "component/harmonic_params.h"
 
 namespace plt = matplotlibcpp;
 
 class SignalProcessor {
 public:
-    static std::vector<double> generateHarmonic(int numPoints, double amplitude, 
-                                              double frequency, double phase, double deltaT) {
+    static std::vector<double> generateHarmonic(
+        int numPoints, double amplitude, double frequency, double phase, double deltaT) {
+
         std::vector<double> harmonic(numPoints);
         for(int i = 0; i < numPoints; ++i) {
             double t = i * deltaT;
@@ -21,14 +27,19 @@ public:
         return harmonic;
     }
 
-    static std::tuple<std::vector<double>, std::vector<double>, std::vector<double>> 
-    processSignal(const std::vector<double>& signal, double deltaT, double targetDistortion) {
+    static std::tuple<std::vector<double>, std::vector<double>, std::vector<double>> processSignal(
+        const std::vector<double>& signal, double deltaT, double targetDistortion) {
+            
         int N = signal.size();
+        int half = N / 2;
         std::vector<std::complex<double>> fftResult(N);
         
         // Выполняем FFT
-        fftw_plan plan = fftw_plan_dft_r2c_1d(N, const_cast<double*>(signal.data()), 
-                                            reinterpret_cast<fftw_complex*>(fftResult.data()), FFTW_ESTIMATE);
+        fftw_plan plan = fftw_plan_dft_r2c_1d(
+            N, const_cast<double*>(signal.data()), 
+            reinterpret_cast<fftw_complex*>(fftResult.data()), FFTW_ESTIMATE
+        );
+
         fftw_execute(plan);
         fftw_destroy_plan(plan);
 
@@ -41,34 +52,47 @@ public:
         }
 
         // Алгоритм выбора компонент
-        int half = N/2;
-        double totalEnergy = 0.0;
-        for(double amp : amplitudes) totalEnergy += amp*amp;
-        
-        double requiredEnergy = (1 - pow(targetDistortion/100, 2)) * totalEnergy;
-        std::vector<int> indices(N);
-        for(int i = 0; i < N; ++i) indices[i] = i;
+        std::vector<int> indices(half + 1);
+        for(int i = 0; i <= half; ++i) indices[i] = i;
         
         std::sort(indices.begin(), indices.end(), [&amplitudes](int a, int b) {
             return amplitudes[a] > amplitudes[b];
         });
 
+        double totalEnergy = 0.0;
+        for(int i = 0; i <= half; ++i) {
+            int idx = indices[i];
+            if (idx == 0 || idx == half)
+                totalEnergy += pow(amplitudes[idx], 2);
+            else
+                totalEnergy += 2 * pow(amplitudes[idx], 2);
+        }
+        
+        double requiredEnergy = (1 - pow(targetDistortion/100, 2)) * totalEnergy;
+        
         std::vector<std::complex<double>> filteredFFT(N, 0.0);
         double currentEnergy = 0.0;
         for(int idx : indices) {
-            if(idx > half) continue;
-            
-            double componentEnergy = (idx != 0) ? 2*pow(amplitudes[idx], 2) : pow(amplitudes[idx], 2);
+            double componentEnergy;
+            if (idx == 0 || idx == half) {
+                componentEnergy = pow(amplitudes[idx], 2);
+            } else {
+                componentEnergy = 2 * pow(amplitudes[idx], 2);
+            }
+
             if(currentEnergy + componentEnergy > requiredEnergy) {
                 double remaining = requiredEnergy - currentEnergy;
                 double scale = sqrt(remaining / componentEnergy);
                 filteredFFT[idx] = fftResult[idx] * scale;
-                if(idx != 0) filteredFFT[N-idx] = fftResult[N-idx] * scale;
+                if (idx != 0 && idx != half)
+                    filteredFFT[N - idx] = fftResult[N - idx] * scale;
+                currentEnergy += remaining;
                 break;
             }
             
             filteredFFT[idx] = fftResult[idx];
-            if(idx != 0) filteredFFT[N-idx] = fftResult[N-idx];
+            if (idx != 0 && idx != half)
+                filteredFFT[N - idx] = fftResult[N - idx];
             currentEnergy += componentEnergy;
         }
 
@@ -89,20 +113,11 @@ public:
 int main() {
     
     const int    numPoints        = 10000;
-    const double samplingFreq     = 2000.0;
-    const double deltaT           = 1.0 / samplingFreq;
+    const double deltaT           = 1e-4;
     const double targetDistortion = 5.0;
 
-    // Генерация тестового сигнала
-    std::vector<std::tuple<double, double, double>> harmonicParams = {
-        {2.0, 50.0, 0.0}, {1.5, 100.0, M_PI/4}, {1.0, 200.0, M_PI/2},
-        {0.8, 300.0, 3*M_PI/4}, {0.6, 400.0, M_PI}, {0.5, 500.0, M_PI/6},
-        {0.4, 600.0, M_PI/3}, {0.3, 700.0, 2*M_PI/3}, {0.2, 800.0, 5*M_PI/6},
-        {0.1, 900.0, M_PI/8}
-    };
-
     std::vector<double> signal(numPoints, 0.0);
-    for(const auto& [amp, freq, phase] : harmonicParams) {
+    for(const auto& [amp, freq, phase] : HarmonicParams::harmonicParams) {
         auto harmonic = SignalProcessor::generateHarmonic(numPoints, amp, freq, phase, deltaT);
         for(int i = 0; i < numPoints; ++i) signal[i] += harmonic[i];
     }
@@ -118,7 +133,6 @@ int main() {
     }
     double distortion = sqrt(mse/power) * 100;
 
-    // Визуализация
     std::vector<double> time(numPoints);
     for(int i = 0; i < numPoints; ++i) time[i] = i * deltaT;
     
@@ -146,5 +160,6 @@ int main() {
     plt::title("Amplitude Spectrum");
     plt::grid(true);
     plt::show();
+
     return 0;
 }
