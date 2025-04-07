@@ -98,8 +98,17 @@ public:
     }
     
     static void exportData(const SignalData& data, const std::string& filename) {
+        const std::string dirPath = "../data";
+    
+        if (!std::filesystem::exists(dirPath)) {
+            try {
+                std::filesystem::create_directories(dirPath);
+            } catch (const std::filesystem::filesystem_error& e) {
+                throw std::runtime_error("Directory creation failed: " + std::string(e.what()));
+            }
+        }
 
-        std::ofstream outFile("../data/" + filename);
+        std::ofstream outFile(dirPath + "/" + filename);
         if (!outFile) {
             throw std::runtime_error("Error opening output file.");
         }
