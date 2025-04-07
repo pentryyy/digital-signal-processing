@@ -11,11 +11,11 @@
 #include <iomanip>
 #include <stdexcept>
 
-#include "include/signal_data.h"
+#include "component/signal_data.h"
 
-#include "component/harmonic_utils.h"
+#include "component/harmonic/harmonic_utils.h"
 
-#include "matplotlibcpp.h"
+#include "component/matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
 
