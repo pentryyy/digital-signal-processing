@@ -1,21 +1,6 @@
-#define _USE_MATH_DEFINES
-
-#include <iostream>
-#include <vector>
-#include <complex>
-#include <algorithm>
-#include <tuple>
-#include <cmath>
-#include <fftw3.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <stdexcept>
-
-#include "component/matplotlibcpp.h"
-
+#include "component/necessary_headers.h"
 #include "component/signal_data.h"
+#include "component/matplotlibcpp.h"
 
 #include "component/harmonic/harmonic_utils.h"
 #include "component/harmonic/harmonic_params.h"
