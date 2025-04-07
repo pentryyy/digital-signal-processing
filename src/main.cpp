@@ -8,31 +8,28 @@ int main() {
     SignalData data;
 
     /*
-    Количество гармоник
     Количество точек
     Шаг времени
     */
-    const int    numOfHarmonics    = HarmonicParams::harmonicParams.size();
-    const int    numOfPoints       = 10000;
-    const double deltaT            = 1e-4;
+    const int    numOfPoints = 10000;
+    const double deltaT      = 1e-4;
 
     // Векторы для хранения данных
-    std::vector<std::vector<double>> harmonics(numOfHarmonics, std::vector<double>(numOfPoints));
     std::vector<double> resultSignal(numOfPoints, 0.0);
 
     // Генерация гармоник и их суммирование
-    for (int i = 0; i < numOfHarmonics; ++i) {
+    for (const std::tuple<double, double, double> item : HarmonicParams::harmonicParams) {
 
-        double amplitude = std::get<0>(HarmonicParams::harmonicParams[i]);
-        double frequency = std::get<1>(HarmonicParams::harmonicParams[i]);
-        double phase     = std::get<2>(HarmonicParams::harmonicParams[i]);
+        double amplitude = std::get<0>(item);
+        double frequency = std::get<1>(item);
+        double phase     = std::get<2>(item);
 
-        harmonics[i] = HarmonicUtils::generateHarmonic(
+        std::vector<double> harmonic = HarmonicUtils::generateHarmonic(
             numOfPoints, amplitude, frequency, phase, deltaT
         );
 
-        for (int j = 0; j < numOfPoints; ++j) {
-            resultSignal[j] += harmonics[i][j];
+        for (int i = 0; i < numOfPoints; ++i) {
+            resultSignal[i] += harmonic[i];
         }
     }
 
