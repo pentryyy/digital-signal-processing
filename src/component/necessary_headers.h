@@ -2,6 +2,13 @@
 
 #define _USE_MATH_DEFINES
 
+/*
+data - структура для хранения информации 
+о частоте гармоники и ее времени
+*/
+#define SignalTime      data.time
+#define SignalFrequency data.frequency
+
 #include <iostream>
 #include <vector>
 #include <complex>

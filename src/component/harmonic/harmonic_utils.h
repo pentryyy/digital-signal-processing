@@ -115,8 +115,8 @@ public:
 
         outFile << std::fixed << std::setprecision(6);
 
-        const std::vector<double>& timeValues   = data.getTime();
-        const std::vector<double>& signalValues = data.getSignal();
+        const std::vector<double>& timeValues   = SignalTime;
+        const std::vector<double>& signalValues = SignalFrequency;
         
         if (timeValues.size() != signalValues.size()) {
             throw std::runtime_error("Data size mismatch.");
@@ -151,11 +151,11 @@ public:
             }
         }
 
-        if (data.getTime().empty()) {
+        if (SignalTime.empty()) {
             throw std::runtime_error("No valid data found in file.");
         }
 
-        std::cout << "Successfully imported " << data.getTime().size() 
+        std::cout << "Successfully imported " << SignalTime.size() 
                   << " data points from " << filename << "\n";
         
         return data;

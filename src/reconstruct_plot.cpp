@@ -19,8 +19,8 @@ int main() {
    const double targetDistortion = 5.0;
 
     // Векторы для хранения исходного сигнала и времени для него
-    std::vector<double> resultSignal = data.getSignal();
-    std::vector<double> time         = data.getTime();
+    std::vector<double> resultSignal = SignalFrequency;
+    std::vector<double> time         = SignalTime;
 
     // Обработка сигнала с заданным порогом
     auto [freq, amplitudes, reconstructed] = HarmonicUtils::processSignal(

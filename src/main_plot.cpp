@@ -10,7 +10,7 @@ int main() {
     SignalData data = HarmonicUtils::importData("merged_signal_data.txt");
 
     plt::figure_size(1200, 600);
-    plt::plot(data.getTime(), data.getSignal(), {{"label", "Result Signal"}, {"color", "b"}});
+    plt::plot(SignalTime, SignalFrequency, {{"label", "Result Signal"}, {"color", "b"}});
     plt::xlabel("Time, s");
     plt::ylabel("Signal Amplitude");
     plt::title("Signal Plot");
