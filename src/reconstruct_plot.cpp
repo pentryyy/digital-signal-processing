@@ -20,10 +20,7 @@ int main() {
 
     // Векторы для хранения исходного сигнала и времени для него
     std::vector<double> resultSignal = data.getSignal();
-    std::vector<double> time(numOfPoints);
-    for(int i = 0; i < numOfPoints; ++i) {
-        time[i] = i * deltaT;
-    }
+    std::vector<double> time         = data.getTime();
 
     // Обработка сигнала с заданным порогом
     auto [freq, amplitudes, reconstructed] = HarmonicUtils::processSignal(
@@ -65,7 +62,14 @@ int main() {
     
     // Второй график - Частотная область
     plt::figure_size(1200, 600);    
-    plt::stem(freqHalf, ampsHalf, "b");
+
+    std::map<std::string, std::string> stemParams = {
+        {"basefmt", " "},
+        {"linefmt", "b-"},
+        {"markerfmt", "bo"}
+    };
+
+    plt::stem(freqHalf, ampsHalf, stemParams);
     plt::xlabel("Frequency, Hz");
     plt::ylabel("Amplitude");
     plt::title("Amplitude Spectrum");
