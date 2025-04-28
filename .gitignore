@@ -6,3 +6,6 @@ executable/
 
 ### Data Folder ###
 data/
+
+### Reports temp data ###
+reports/~$gital-signal-processing.docx
